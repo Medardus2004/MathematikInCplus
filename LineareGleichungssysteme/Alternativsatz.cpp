@@ -7,48 +7,96 @@
 
 using namespace std;
 
-void demonstrate_usage_of_vector_as_2d_array(int * matrix, int lines, int columns)
-{
-  for (int i=0; i<lines; ++i)
-    {
-      for (int j=0; j<columns; ++j)
-        {
-		if ( j+1 < columns)
-        cout << matrix[i*columns + j] << "x" << j+1  << '\t'  ;
-       		else
-	cout << "=" <<  matrix[i*columns + j]  << '\t'  ;	
-       	}
-      cout << '\n';
-    }
-  cout << endl;
+int columncounter() {
+
+    ifstream input("linSystem");
+    string line;
+
+ 	int columncounter = 0;
+
+
+
+
+    while(getline(input,line))
+      {
+            columncounter++;
+      }
+    return columncounter;
 }
+
 
 int main()
 {
   
-std::cout << "Lösen eines linearen Gleichungssystems! \n  \n \n Tragen Sie in die Datei ein linSystem Ihr lineares Gleichungs-System ein. \n Dabei steht die erste Spalte für die x1- Werte, die zweite Spalte für die x2-Werte, usw. Die letzte Spalte entspricht Ihrem Wert \n Im Ihr Gleichungssystem sieht folgendermaßen aus: \n";	
+std::cout << "Lösen eines linearen Gleichungssystems! \n  \n \n Tragen Sie in die Datei ein linSystem Ihr lineares Gleichungs-System ein. \n Dabei steht die erste Spalte für die x1- Werte, die zweite Spalte für die x2-Werte, usw. Die letzte Spalte entspricht dem Ergebnis \n Ihr Gleichungssystem sieht folgendermaßen aus: \n";	
   
-  vector<int> matrix;
-  int lines,columns=-1;
+//  int lines,columns=-1;
 
-  {   // Einlesen
-    ifstream input("linSystem");
-    string line;
-    while(getline(input,line))
-      {
-        int columncounter=0;
-        stringstream lineparser(line);
-        int element;
-        while(lineparser >> element) 
-          {
-            matrix.push_back(element);
-            ++columncounter;
-          }
-        if (columns==-1) columns=columncounter;
-  lines=matrix.size()/columns;
-      }
-  }  // Einlesen fertig
+    
+	// Initialize Matrix
+	int columns = columncounter();
+	double matrix[columns+1][columns];
+	// Fill Matrix
+	ifstream input("linSystem");
+    	string line;
+	int zeile = 0;
+    	while(getline(input,line))
+      	{
+        	stringstream lineparser(line);
 
-  demonstrate_usage_of_vector_as_2d_array(&matrix[0], lines, columns);
+        	double element;
+        	int row = 0;
+        	
+		while(lineparser >> element)
+          	{
+			matrix[row][zeile] = element;
+			row++;
+          	}
+		zeile++;
+      	}
+	
 
-}
+	// Show Linear System
+	for(int i = 0; i < columns; i++) 
+	{
+		for(int j = 0; j < columns; j++) 		 
+		{
+			std::cout << " + "  << matrix[j][i] << "x" << j+1;
+		}
+		std::cout << " = "  << matrix[columns][i] << "\n";
+	}
+  
+
+	for(int durchlauf = 0; durchlauf < columns -1; durchlauf++)
+	{
+		std::cout << " Nun wird jede Zeile durch den Wert von x" << durchlauf+1 << " geteilt \n";
+		for(int i = durchlauf; i < columns; i++) 
+		{
+			double teiler = matrix[durchlauf][i];
+			for(int j = durchlauf; j < columns; j++)
+                	{
+				matrix[j][i] /= teiler;
+                        	std::cout << " + "  << matrix[j][i] << "x" << j+1; 
+               	 	}
+			matrix[columns][i] /= teiler;
+                	std::cout << " = "  << matrix[columns][i] << "\n";
+		}
+
+		std::cout << " und abgezogen \n";
+		for( int i = durchlauf; i < columns; i++)
+        	{
+                	for(int j = durchlauf; j < columns; j++)
+                	{
+                        	matrix[j][i+1] -= matrix[j][durchlauf];
+                        	std::cout << " + "  << matrix[j][i] << "x" << j+1;
+                	}
+                	matrix[columns][i+1] -= matrix[columns][durchlauf];
+                	std::cout << " = "  << matrix[columns][i] << "\n";
+        	}
+	}
+	// Präsentieren der Lösung
+	for(int durchlauf = columns; durchlauf > columns -1; durchlauf--)
+        {
+		std::cout << "x" << durchlauf << " = " << matrix[columns][durchlauf-1] / matrix[durchlauf-1][durchlauf-1] << " \n \n " ;
+	}
+}  
