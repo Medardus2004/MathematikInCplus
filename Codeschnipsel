@@ -1,0 +1,9 @@
+
+Wort erstellen und Buchstabe für Bushstabe durchgehen
+  
+unsigned char *str = "ABCDEF";
+ while (*str)
+      {
+        printf("string: \t \t \t \t %c \n", *str);
+        *str++;
+      }
