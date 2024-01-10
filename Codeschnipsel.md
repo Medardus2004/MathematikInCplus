@@ -1,5 +1,5 @@
 
-Wort erstellen und Buchstabe für Bushstabe durchgehen
+## Wort erstellen und Buchstabe für Bushstabe durchgehen
   
 unsigned char *str = "ABCDEF";
  while (*str)
@@ -7,3 +7,9 @@ unsigned char *str = "ABCDEF";
         printf("string: \t \t \t \t %c \n", *str);
         *str++;
       }
+
+
+## Umwandlung in integer
+
+__uint8_t* data = ( __uint8_t*)str
+data[i];
